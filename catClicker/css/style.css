@@ -16,3 +16,14 @@ h2, #cat-count {
 	text-align: center;
 	margin: 0 auto;
 }
+
+#admin-btn {
+	display: block;
+	text-align: center;
+	margin: 0 auto;
+}
+
+#admin-form {
+	width: 500px;
+	margin: 0 auto;
+}

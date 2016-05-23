@@ -1,6 +1,7 @@
 /* ======= Model ======= */
 
 var model = {
+	show: false,
 	currCat: null,
 	cats : [
 		{
@@ -46,6 +47,7 @@ var octopus = {
 		// tell views to initialize
 		catListView.init();
 		catView.init();
+		catAdminView.init();
 	},
 	getCurrCat: function() {
 		return model.currCat;
@@ -59,6 +61,38 @@ var octopus = {
 	incrementCounter: function() {
 		model.currCat.clickCount++;
 		catView.render();
+	},
+	showAdmin: function() {
+		model.show = true;
+		catAdminView.render();
+	},
+	hideAdmin: function() {
+		model.show = false;
+		catAdminView.render();
+	},
+	getShow: function() {
+		return model.show;
+	},
+	updateInfo: function() {
+		var currCat = octopus.getCurrCat();
+		this.nameElem = document.getElementById('name');
+		this.imgUrlElem = document.getElementById('img-url');
+		this.numClicksElem = document.getElementById('clicks');
+
+		octopus.setName(this.nameElem.value);
+		octopus.setURL(this.imgUrlElem.value);
+		octopus.setClicks(this.numClicksElem.value);
+		catView.render();
+
+	},
+	setName: function(name) {
+		model.currCat.name = name;
+	},
+	setURL: function(url) {
+		model.currCat.img = url;
+	},
+	setClicks: function(clicks) {
+		model.currCat.clickCount = clicks;
 	}
 };
 
@@ -112,4 +146,49 @@ var catListView = {
 	}
 };
 
+var catAdminView = {
+	init: function() {
+		this.adminBtnElem = document.getElementById('admin-btn');
+		this.adminFormElem = document.getElementById('admin-form');
+		this.nameElem = document.getElementById('name');
+		this.imgUrlElem = document.getElementById('img-url');
+		this.numClicksElem = document.getElementById('clicks');
+		this.submitElem = document.getElementById('submit');
+		this.cancelElem = document.getElementById('cancel');
+
+		this.adminBtnElem.addEventListener('click', function(){
+			octopus.showAdmin();
+			catAdminView.render();
+		});
+
+		this.render();
+	},
+	render: function() {
+		var currentCat = octopus.getCurrCat();
+		this.nameElem.value = currentCat.name;
+		this.imgUrlElem.value = currentCat.img;
+		this.numClicksElem.value = currentCat.clickCount;
+		var show = octopus.getShow();
+		if(show){
+			this.adminFormElem.style.display = 'block';
+		} else {
+			this.adminFormElem.style.display = 'none';	
+		}
+
+		this.submitElem.addEventListener('click', function(e){
+			e.preventDefault();
+			octopus.updateInfo();
+			catView.render();
+			octopus.hideAdmin();
+			catAdminView.render();
+		});
+
+		this.cancelElem.addEventListener('click', function(e){
+			e.preventDefault();
+			octopus.hideAdmin();
+			catAdminView.render();
+		});
+
+	}
+};
 octopus.init();
